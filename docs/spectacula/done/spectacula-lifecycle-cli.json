@@ -1,0 +1,97 @@
+{
+  "spec_id": "spectacula-lifecycle-cli",
+  "slug": "spectacula-lifecycle-cli",
+  "title": "Spectacula Lifecycle CLI Specification",
+  "stage": "done",
+  "spec_path": "../specs/spectacula-lifecycle-cli.md",
+  "created_at": "2026-05-26T14:09:44Z",
+  "approved_at": "2026-05-26T14:09:44Z",
+  "started_at": "2026-05-26T14:09:44Z",
+  "updated_at": "2026-05-26T14:17:18Z",
+  "summary": "Lifecycle CLI commands and documentation updates completed and verified.",
+  "next_action": "No further action.",
+  "blockers": [],
+  "reference_examples": [],
+  "review_policy": {
+    "final_vetting": "required"
+  },
+  "verification": {
+    "format": "skipped",
+    "lint": "skipped",
+    "typecheck": "skipped",
+    "build": "passed",
+    "tests": "passed",
+    "spec_review": "passed",
+    "final_vetting": "passed",
+    "notes": "No project formatter, linter, or type checker is configured. Build evidence: python3 -m py_compile scripts/*.py passed. Test evidence: temporary repo smoke test covered new/status/validate/move/verdict and done-gate refusal. Review rendering JSON also passed. Self-review found the implementation satisfies the spec command contract.\n2026-05-26T14:16:35Z final_vetting_passed: Final vetting found no blocking gaps against the lifecycle CLI spec.\n2026-05-26T14:17:18Z final_vetting_passed: Post-fix final vetting confirmed no blocking gaps after the done-stage resume-context update."
+  },
+  "resume_context": {
+    "last_completed_step": "Moved manifest to done after required verification gates passed.",
+    "pending_steps": [],
+    "open_questions": [],
+    "last_reviewed_sections": [
+      "3. Command Contract",
+      "7. Definition of Done"
+    ],
+    "artifacts": [
+      "docs/spectacula/specs/spectacula-lifecycle-cli.md",
+      "scripts/spectacula.py",
+      "scripts/render_review_prompt.py",
+      "references/spectacula-lifecycle.md",
+      "README.md"
+    ],
+    "notes": "User invoked strict Spectacula mode and authorized implementation."
+  },
+  "history": [
+    {
+      "at": "2026-05-26T14:09:44Z",
+      "event": "spec_created",
+      "from_stage": null,
+      "to_stage": "specs",
+      "note": "Initial spec created from review findings."
+    },
+    {
+      "at": "2026-05-26T14:09:44Z",
+      "event": "spec_approved",
+      "from_stage": "specs",
+      "to_stage": "ready",
+      "note": "User requested strict implementation without a separate approval pause."
+    },
+    {
+      "at": "2026-05-26T14:09:44Z",
+      "event": "implementation_started",
+      "from_stage": "ready",
+      "to_stage": "inprogress",
+      "note": "Started lifecycle CLI implementation."
+    },
+    {
+      "at": "2026-05-26T14:14:33Z",
+      "event": "verification_completed",
+      "from_stage": "inprogress",
+      "to_stage": "inprogress",
+      "note": "py_compile, lifecycle smoke test, repository validation, review render JSON, and self-review passed."
+    },
+    {
+      "at": "2026-05-26T14:16:35Z",
+      "event": "final_vetting_passed",
+      "from_stage": "inprogress",
+      "to_stage": "inprogress",
+      "note": "Final vetting found no blocking gaps against the lifecycle CLI spec."
+    },
+    {
+      "at": "2026-05-26T14:16:38Z",
+      "event": "implementation_completed",
+      "from_stage": "inprogress",
+      "to_stage": "done",
+      "note": "Strict Spectacula++ final vetting passed; moving work to done."
+    },
+    {
+      "at": "2026-05-26T14:17:18Z",
+      "event": "final_vetting_passed",
+      "from_stage": "done",
+      "to_stage": "done",
+      "note": "Post-fix final vetting confirmed no blocking gaps after the done-stage resume-context update."
+    }
+  ],
+  "completed_at": "2026-05-26T14:16:38Z"
+}

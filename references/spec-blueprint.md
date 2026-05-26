@@ -2,6 +2,19 @@
 
 Use this blueprint as the default shape for long-form specs. Reorder or trim sections to fit the request, but keep the document decision-heavy and concrete.
 
+## Table of Contents
+
+1. Detail Floor
+2. Style Signals To Mirror
+3. High-Rigor Format
+4. Contract-Heavy Service Spec
+5. Repository-Backed Feature Spec
+6. Recommended Section Menu
+7. Section Patterns
+8. Formatting Rules
+9. Light-Weight Variant
+10. Final Review Pass
+
 ## Detail Floor
 
 When Spectacula is asked for an implementation-ready technical spec, detail is the default, not an optional extra.

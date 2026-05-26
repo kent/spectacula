@@ -2,6 +2,19 @@
 
 Use this rubric when Spectacula reviews or upgrades an existing spec.
 
+## Table of Contents
+
+1. Quality Bar
+2. Problem Framing
+3. Current-State Context
+4. Requirements And Behavior
+5. Design And Architecture
+6. Contracts And Data Model
+7. Operational Behavior
+8. Validation And Done Criteria
+9. Assumptions And Open Questions
+10. Review Output Format
+
 ## Quality Bar
 
 A good Spectacula spec is implementation-ready. It should let an engineer build with minimal guesswork and let a reviewer identify what is in scope, out of scope, risky, and still unresolved.

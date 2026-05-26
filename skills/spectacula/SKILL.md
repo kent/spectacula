@@ -78,8 +78,10 @@ python3 "${CLAUDE_SKILL_DIR}/../../scripts/bootstrap_repo.py" .
 - Store the canonical spec at `docs/spectacula/specs/<slug>.md`.
 - Keep exactly one active JSON manifest at `docs/spectacula/specs`, `ready`, `inprogress`, or `done`.
 - Move only the manifest between stage directories. Keep the spec Markdown fixed in `docs/spectacula/specs`.
+- Treat `spec_path` as manifest-relative, normally `../specs/<slug>.md`.
 - Preserve `summary`, `next_action`, `history`, `verification`, and `resume_context` so interrupted work can resume cleanly.
 - Treat `verification.spec_review` and `verification.final_vetting` as separate signals. `done` always requires `spec_review=passed`. If `review_policy.final_vetting = "required"`, also require `final_vetting=passed` before moving to `done`.
+- Prefer the bundled lifecycle command wrapper (`spectacula new`, `status`, `validate`, `move`, and `verdict`) when available instead of hand-editing routine manifest transitions.
 
 ## Use Claude Subagents And Agent Teams
 

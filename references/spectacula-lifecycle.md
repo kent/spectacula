@@ -2,6 +2,17 @@
 
 Use this reference when specs are managed in `docs/spectacula` inside the user's working repository.
 
+## Table of Contents
+
+1. Directory Contract
+2. Stage Meanings
+3. Manifest Schema
+4. Example Manifest
+5. Transition Rules
+6. Lifecycle CLI
+7. Interruption And Resume Rules
+8. Status Query Workflow
+
 ## Directory Contract
 
 Use this repository layout:
@@ -46,7 +57,7 @@ Required fields:
 - `slug`: filesystem-safe short name
 - `title`: human-readable spec title
 - `stage`: one of `specs`, `ready`, `inprogress`, `done`
-- `spec_path`: relative path to the canonical Markdown spec in `docs/spectacula/specs`
+- `spec_path`: manifest-relative path to the canonical Markdown spec in `docs/spectacula/specs`
 - `updated_at`: ISO-8601 timestamp
 - `summary`: short current-state summary
 - `next_action`: the next concrete step
@@ -80,6 +91,12 @@ Recommended `verification` fields:
 Recommended `review_policy` fields:
 
 - `final_vetting`: `required` or `off`
+
+Path rule:
+
+- Resolve `spec_path` relative to the manifest file's current directory, not relative to the repository root.
+- Example: `docs/spectacula/inprogress/my-spec.json` should use `"spec_path": "../specs/my-spec.md"`.
+- When the manifest moves stages, keep the same `../specs/<slug>.md` value.
 
 Use status values such as:
 
@@ -199,8 +216,25 @@ Best practice for `inprogress -> done`:
 
 - `done` should mean the implementation exists, the relevant verification gates were run, and `verification.spec_review` passed.
 - When `review_policy.final_vetting = "required"`, `done` also requires `verification.final_vetting` to pass.
-- When you want the assembled final vetting prompt and current context, prefer Spectacula's `scripts/spectacula++` or `scripts/spectacula review [<slug-or-manifest>]` command, then record the resulting verdict in the manifest.
+- When you want the assembled final vetting prompt and current context, prefer Spectacula's `scripts/spectacula++` or `scripts/spectacula review [<slug-or-manifest>]` command, then record the resulting verdict with `scripts/spectacula verdict <slug-or-manifest> passed|failed`.
 - If a verification gate cannot pass yet, keep the manifest in `inprogress` unless the user explicitly accepts a blocked or partial state and that decision is recorded in `verification.notes` and `history`.
+
+## Lifecycle CLI
+
+The bundled command wrapper can perform the routine bookkeeping that otherwise requires hand-editing JSON:
+
+```bash
+scripts/spectacula new <slug> --title "<Title>"
+scripts/spectacula status [<slug-or-manifest>]
+scripts/spectacula validate
+scripts/spectacula move <slug-or-manifest> ready
+scripts/spectacula move <slug-or-manifest> inprogress
+scripts/spectacula review [<slug-or-manifest>]
+scripts/spectacula verdict <slug-or-manifest> passed --reason "<summary>"
+scripts/spectacula move <slug-or-manifest> done
+```
+
+Use `validate` before important stage transitions and before marking work complete. It checks manifest uniqueness, stage/path consistency, required fields, known verification statuses, and `done` gate requirements.
 
 ## Interruption And Resume Rules
 

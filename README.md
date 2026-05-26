@@ -60,6 +60,7 @@ assets/
 - stores canonical specs in `docs/spectacula/specs`
 - moves stage manifests across `specs`, `ready`, `inprogress`, and `done`
 - preserves summary, history, verification state, and resume context
+- provides lifecycle CLI commands for creating, validating, moving, reporting, and recording final-vetting verdicts
 - drives implementation from the approved spec
 - requires verification gates before marking work done
 - supports an invokable final-vetting prompt before marking work done
@@ -88,6 +89,7 @@ What the aliases change during implementation:
 - `$spectacula ...` uses the standard Spectacula loop: implement, run native checks, self-review against the spec, then move to `done` when the normal gates pass
 - `$spectacula++ ...` uses the same implementation loop, but also requires `review_policy.final_vetting = "required"` and a separate final vetting verdict in `verification.final_vetting` before `done`
 - `~/.codex/skills/spectacula/scripts/spectacula review` renders the exact local pre-PR review prompt and repo context for that final gate
+- `~/.codex/skills/spectacula/scripts/spectacula verdict <slug> passed|failed` records the final-vetting outcome before a strict run can move to `done`
 
 ## Better Specs With Less Prompting
 
@@ -389,6 +391,7 @@ Rules:
 - Keep the Markdown spec fixed in `specs/`.
 - Do not duplicate the full spec text in the manifest.
 - Keep enough metadata to answer status questions and resume work.
+- Keep `spec_path` manifest-relative, normally as `../specs/<slug>.md`.
 
 This lifecycle lives in the user's working repo, not in the installed skill directory.
 
@@ -397,14 +400,14 @@ See [assets/repo-template/docs/spectacula/README.md](./assets/repo-template/docs
 ## Quick Start
 
 1. Run [scripts/spectacula](./scripts/spectacula) `bootstrap` against the target repo.
-2. Copy `docs/spectacula/templates/spec.template.md` in that target repo to `docs/spectacula/specs/otp-agent-crud.md`.
-3. Copy `docs/spectacula/templates/manifest.template.json` in that target repo to `docs/spectacula/specs/otp-agent-crud.json`.
-4. Use `spectacula` to clarify and draft the spec for CRUD operations for Erlang-based OTP agents.
-5. Move the manifest to `ready/` once approved.
-6. Move the manifest to `inprogress/` when implementation starts.
-7. Run verification and final self-review.
-8. If the current run uses `spectacula++`, render and apply the final vetting pass before closing.
-9. Move the manifest to `done/` only when the required review gates for the task are complete.
+2. Run `scripts/spectacula new otp-agent-crud --title "OTP Agent CRUD Specification"`.
+3. Use `spectacula` to clarify and draft the spec for CRUD operations for Erlang-based OTP agents.
+4. Move the manifest to `ready` once approved: `scripts/spectacula move otp-agent-crud ready`.
+5. Move the manifest to `inprogress` when implementation starts: `scripts/spectacula move otp-agent-crud inprogress`.
+6. Run verification and final self-review.
+7. If the current run uses `spectacula++`, render and apply the final vetting pass, then record the verdict.
+8. Validate lifecycle state: `scripts/spectacula validate`.
+9. Move the manifest to `done` only when the required review gates for the task are complete.
 
 Example strict implementation flow:
 
@@ -412,7 +415,26 @@ Example strict implementation flow:
 $spectacula Build a full implementation-ready spec for CRUD operations for Erlang-based OTP agents.
 $spectacula++ Implement docs/spectacula/specs/otp-agent-crud.md and keep the manifest current through ready, inprogress, and done.
 ~/.codex/skills/spectacula/scripts/spectacula review otp-agent-crud
+~/.codex/skills/spectacula/scripts/spectacula verdict otp-agent-crud passed --reason "Final vetting found no blocking gaps."
+~/.codex/skills/spectacula/scripts/spectacula move otp-agent-crud done
 ```
+
+## Lifecycle CLI
+
+The command wrapper supports the routine state operations that agents otherwise have to perform by editing JSON:
+
+```bash
+./scripts/spectacula new <slug> --title "<Title>"
+./scripts/spectacula status [<slug-or-manifest>]
+./scripts/spectacula validate
+./scripts/spectacula move <slug-or-manifest> ready
+./scripts/spectacula move <slug-or-manifest> inprogress
+./scripts/spectacula review [<slug-or-manifest>]
+./scripts/spectacula verdict <slug-or-manifest> passed --reason "<summary>"
+./scripts/spectacula move <slug-or-manifest> done
+```
+
+`validate` checks duplicate manifests, stage/path consistency, required fields, known verification statuses, and `done` gate rules. A strict run cannot move to `done` unless `verification.spec_review = "passed"` and, when `review_policy.final_vetting = "required"`, `verification.final_vetting = "passed"`.
 
 ## Codex Invocation
 
@@ -553,7 +575,7 @@ If there is exactly one active manifest in `docs/spectacula/inprogress`, the com
 ~/.codex/skills/spectacula/scripts/spectacula review docs/spectacula/inprogress/my-spec.json
 ```
 
-The command renders the reviewer prompt plus the active repo/spec/manifest context so Codex or Claude can apply it as the final vetting pass. A failed verdict should keep the work in `inprogress`, with `verification.final_vetting` and history updated from the review outcome.
+The command renders the reviewer prompt plus the active repo/spec/manifest context so Codex or Claude can apply it as the final vetting pass. Record the outcome with `spectacula verdict <slug-or-manifest> passed|failed --reason "<summary>"`. A failed verdict keeps the work in `inprogress`; a passed verdict still requires a deliberate `spectacula move <slug-or-manifest> done`.
 
 The built-in reviewer prompt is modeled after a PR merge gate, but adapted for local pre-PR use:
 
@@ -578,10 +600,14 @@ Typical strict workflow:
 
 ## Development
 
-Validate the skill:
+Validate the skill package:
 
 ```bash
 PYTHONPATH=/tmp/skill-creator-deps python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py .
+python3 scripts/validate_skill_best_practices.py .
+python3 scripts/spectacula.py validate
+python3 -m py_compile scripts/*.py
+git diff --check
 ```
 
 Test the Claude plugin locally:

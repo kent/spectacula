@@ -135,8 +135,10 @@ When the user asks for `spec-upgrade`:
 - Keep exactly one active stage manifest per spec as `docs/spectacula/<stage>/<slug>.json`.
 - Use stages `specs`, `ready`, `inprogress`, and `done`.
 - Do not copy the full spec body into stage manifests. The manifest must point back to the canonical spec in `docs/spectacula/specs`.
+- Treat `spec_path` as manifest-relative, normally `../specs/<slug>.md`.
 - Move the manifest file between stage directories as work advances. The Markdown spec stays in `docs/spectacula/specs`.
 - Update manifest metadata whenever the stage changes or an important checkpoint is reached, so interrupted work can resume cleanly.
+- Prefer [scripts/spectacula](./scripts/spectacula) `new`, `status`, `validate`, `move`, and `verdict` for routine lifecycle bookkeeping when the script is available.
 - Use the Spectacula contract in [spectacula-lifecycle.md](./references/spectacula-lifecycle.md).
 
 ## Answer Status Questions
@@ -171,7 +173,8 @@ When the user asks for `spec-upgrade`:
 - Use [implementation-handoff.md](./references/implementation-handoff.md) when the task transitions from planning/specification into coding.
 - Use [spec-audit-rubric.md](./references/spec-audit-rubric.md) when reviewing or upgrading existing specs.
 - Use [spectacula-lifecycle.md](./references/spectacula-lifecycle.md) when storing or tracking specs in `docs/spectacula`.
-- Use [scripts/bootstrap_repo.py](./scripts/bootstrap_repo.py) or [assets/repo-template/docs/spectacula](./assets/repo-template/docs/spectacula) to scaffold `docs/spectacula` into the user's working repo.
+- Use [scripts/spectacula](./scripts/spectacula) for lifecycle commands, or [scripts/bootstrap_repo.py](./scripts/bootstrap_repo.py) / [assets/repo-template/docs/spectacula](./assets/repo-template/docs/spectacula) to scaffold `docs/spectacula` into the user's working repo.
 - Use [claude-portable-prompt.md](./references/claude-portable-prompt.md) when adapting this skill for Claude project instructions or a Claude agent prompt.
+- When updating Spectacula itself, also run [scripts/validate_skill_best_practices.py](./scripts/validate_skill_best_practices.py) and the official `skill-creator` `quick_validate.py` check before finishing.
 
 This skill is intentionally prompt-first and portable. The Codex skill is the source of truth; the Claude prompt reference keeps the same workflow and quality bar when you need the same behavior in Claude.

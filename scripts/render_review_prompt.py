@@ -183,8 +183,9 @@ Final vetting instructions:
 - Do not assume the work is ready just because tests passed.
 - Return a structured verdict using this shape:
 {json.dumps(RESULT_SHAPE, indent=2)}
-- If the verdict is approved, record `verification.final_vetting = "passed"` and append a `final_vetting_passed` history event before moving to `done`.
-- If the verdict is not approved, record `verification.final_vetting = "failed"`, append a `final_vetting_failed` history event, and keep the manifest in `inprogress` until the gaps are addressed or the user explicitly accepts the risk.
+- Return the verdict only. The caller should record the outcome with `scripts/spectacula verdict <slug-or-manifest> passed|failed --reason "<summary>"`.
+- If the verdict is approved, the caller may then move to `done` after all other gates pass.
+- If the verdict is not approved, the caller must keep the manifest in `inprogress` until the gaps are addressed or the user explicitly accepts the risk.
 """
 
 
